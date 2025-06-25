@@ -6,7 +6,7 @@
   tasks:
     - name: Deploy VM from template
       community.vmware.vmware_guest:
-        hostname: 192.168.2.129
+        hostname: *.*.*.*.*.*.*
         username: administrator@vsphere.local
         password: '**************'
         validate_certs: no
