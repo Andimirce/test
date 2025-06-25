@@ -1,0 +1,34 @@
+- name: Deploy VM from template
+  hosts: localhost
+  gather_facts: no
+  connection: local
+
+  tasks:
+    - name: Deploy VM from template
+      community.vmware.vmware_guest:
+        hostname: 192.168.2.129
+        username: administrator@vsphere.local
+        password: '#V1o$t0R/1998!@$'
+        validate_certs: no
+        datacenter: Datacenter - Commprog
+        folder: /redhat
+        name: test
+        template: Win.Server2019-Template
+        state: poweredon
+        cluster: Cluster - Commprog
+        networks:
+          - name: VM Network
+            ip: 192.168.100.195
+            netmask: 255.255.255.0
+            gateway: 192.168.100.254
+            type: static
+        hardware:
+          memory_mb: 2048
+          num_cpus: 2
+          scsi: paravirtual
+        disk:
+          - size_gb: 350
+            type: thin
+            datastore: Migration LUN
+        wait_for_ip_address: yes
+      delegate_to: localhost
