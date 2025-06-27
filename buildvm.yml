@@ -6,9 +6,7 @@
   tasks:
     - name: Deploy VM from template
       community.vmware.vmware_guest:
-        hostname: *.*.*.*.*.*.*
-        username: administrator@vsphere.local
-        password: '**************'
+        hostname: 192.168.2.129
         validate_certs: no
         datacenter: Datacenter - Commprog
         folder: /redhat
