@@ -1,5 +1,5 @@
-ping_test:
-  description: "Ping a Windows host"
-  command: "ping"
-  expected_output: "Reply from"
-  timeout_seconds: 10
+- name: Ping Windows host
+  hosts: windows
+  tasks:
+    - name: Ensure Windows host is reachable
+      win_ping:
