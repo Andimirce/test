@@ -2,8 +2,8 @@
 from ldap3 import Server, Connection, ALL
 import json
 
-LDAP_SERVER = 'ldap://'CPTR-DC1.commprog.com
-USER = 'commprog\\ansible_user'
+LDAP_SERVER = 'ldap://CPTR-DC1.commprog.com'
+USER = 'commprog\\ansible.ldap'
 PASSWORD = 'Celsi$olNota22!'
 BASE_DN = 'DC=commprog,DC=com'
 
