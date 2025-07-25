@@ -11,7 +11,11 @@ server = Server(LDAP_SERVER, get_info=ALL)
 conn = Connection(server, USER, PASSWORD, auto_bind=True)
 conn.search(BASE_DN, '(objectClass=computer)', attributes=['dNSHostName'])
 
-hosts = [e['attributes']['dNSHostName'] for e in conn.response if 'dNSHostName' in e['attributes']]
+hosts = []
+for e in conn.response:
+    attrs = e.get('attributes', {})
+    if 'dNSHostName' in attrs:
+        hosts.append(attrs['dNSHostName'])
 
 inventory = {
     "all": {
