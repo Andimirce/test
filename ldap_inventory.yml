@@ -15,11 +15,15 @@
       set_fact:
         ldap_hosts: "{{ ldap_output.stdout | from_json }}"
 
+    - name: Flatten discovered hosts
+      set_fact:
+        discovered_hosts_flat: "{{ ldap_hosts | flatten }}"
+
     - name: Add hosts dynamically
       add_host:
         name: "{{ item }}"
         groups: ldap_discovered
-      loop: "{{ ldap_hosts.all.hosts }}"
+      loop: "{{ discovered_hosts_flat }}"
 
 - name: Ping dynamically added hosts
   hosts: ldap_discovered
