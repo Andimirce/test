@@ -1,0 +1,60 @@
+---
+- name: Run LDAP inventory script from embedded content
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Write embedded LDAP Python script to disk
+      copy:
+        dest: /tmp/ldap_inventory.py
+        mode: '0755'
+        content: |
+          #!/usr/bin/env python3
+          from ldap3 import Server, Connection, ALL
+          import json
+
+          LDAP_SERVER = 'ldap://CPTR-DC1.commprog.com'
+          USER = 'commprog\\ansible.ldap'
+          PASSWORD = 'Celsi$olNota22!'
+          BASE_DN = 'DC=commprog,DC=com'
+
+          server = Server(LDAP_SERVER, get_info=ALL)
+          conn = Connection(server, USER, PASSWORD, auto_bind=True)
+          conn.search(BASE_DN, '(objectClass=computer)', attributes=['dNSHostName'])
+
+          hosts = []
+          for e in conn.response:
+              attrs = e.get('attributes', {})
+              if 'dNSHostName' in attrs:
+                  hosts.append(attrs['dNSHostName'])
+
+          inventory = {
+              "all": {
+                  "hosts": hosts,
+                  "vars": {}
+              }
+          }
+
+          print(json.dumps(inventory, indent=2))
+
+    - name: Run the LDAP inventory script
+      command: python3 /tmp/ldap_inventory.py
+      register: ldap_output
+
+    - name: Parse JSON output and extract host list
+      set_fact:
+        ldap_hosts: "{{ (ldap_output.stdout | from_json).all.hosts }}"
+
+    - name: Add LDAP-discovered hosts to inventory
+      add_host:
+        name: "{{ item }}"
+        groups: ldap_discovered
+      loop: "{{ ldap_hosts }}"
+
+- name: Ping dynamically added LDAP hosts
+  hosts: ldap_discovered
+  gather_facts: false
+
+  tasks:
+    - name: Ping host
+      ping:
