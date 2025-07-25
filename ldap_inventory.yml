@@ -1,0 +1,30 @@
+---
+- name: Run LDAP inventory script from local folder
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    ldap_script: ldap_inventory.py
+
+  tasks:
+    - name: Run LDAP script
+      command: python3 {{ ldap_script }}
+      register: ldap_output
+
+    - name: Parse LDAP output JSON
+      set_fact:
+        ldap_hosts: "{{ ldap_output.stdout | from_json }}"
+
+    - name: Add hosts dynamically
+      add_host:
+        name: "{{ item }}"
+        groups: ldap_discovered
+      loop: "{{ ldap_hosts.all.hosts }}"
+
+- name: Ping dynamically added hosts
+  hosts: ldap_discovered
+  gather_facts: false
+
+  tasks:
+    - name: Ping host
+      ping:
