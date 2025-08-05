@@ -1,14 +1,14 @@
----
 - name: Run LDAP inventory script from local folder
   hosts: localhost
   gather_facts: false
 
   vars:
     ldap_script: ldap_inventory.py
+    python_bin: /usr/bin/python3  # ndrysho këtë me rrugën që dole nga which python3
 
   tasks:
     - name: Run LDAP script
-      command: python3.9 {{ ldap_script }}
+      command: "{{ python_bin }} {{ ldap_script }}"
       register: ldap_output
 
     - name: Parse LDAP output JSON
