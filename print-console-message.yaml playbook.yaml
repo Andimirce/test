@@ -1,0 +1,14 @@
+---
+- name: Check if the nginx config file is modified 
+  hosts: localhost  
+  sources:
+    - name: file_watch
+      ansible.eda.file_watch:
+        path: /usr/local/etc/nginx/nginx.conf
+        recursive: true
+  rules:
+    - name: Run the action if the /usr/local/etc/nginx/nginx.conf is modified
+      condition: event.change == "modified"
+      action:
+        run_playbook:
+          name: print-console-message.yml
