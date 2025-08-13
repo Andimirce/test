@@ -1,0 +1,13 @@
+---
+- name: Playbook for printing the content of the /tmp/errorfile
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Cat the content of the /tmp/errorfile and store it in errorfile_output
+      command: cat errorfile chdir=/tmp
+      register: errorfile_output
+
+    - name: Print the content in console 
+      debug:
+        msg: "{{errorfile_output.stdout}}"
