@@ -1,0 +1,12 @@
+---
+---
+- name: Test EDA Rulebook to another AAP host
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Ping remote host
+      ansible.builtin.ping:
+
+    - name: Debug message
+      ansible.builtin.debug:
+        msg: "Rule triggered successfully on {{ inventory_hostname }}!"
