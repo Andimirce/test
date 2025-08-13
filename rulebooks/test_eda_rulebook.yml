@@ -1,0 +1,14 @@
+---
+- name: Check if the error file is modified recently
+  hosts: localhost
+  sources:
+    - name: file_watch
+      ansible.eda.file_watch:
+        path: /tmp/errorfile
+        recursive: false   # change to true if you want to watch subdirectories
+  rules:
+    - name: Run action if /tmp/errorfile is modified
+      condition: event.change == "modified"
+      action:
+        run_playbook:
+          name: print-debug-msg.yml
