@@ -1,0 +1,9 @@
+---
+- name: Playbook for printing the message in console 
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Error message in the console 
+      debug:
+        msg: "Server config altered"
